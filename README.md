@@ -82,6 +82,12 @@ Le statut de chaque facture est mis à jour automatiquement après chaque paieme
 
 ### Diagramme de cas d'utilisation (Use Case)
 
+![Use Case Diagram](uml/usecase.png)
+
 ### Diagramme de classes (Class Diagram)
 
+![Class Diagram](uml/class.png)
+
 ### Diagramme de séquence (Sequence Diagram)
+
+![Sequence Diagram](uml/sequence.png)
