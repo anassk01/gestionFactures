@@ -75,11 +75,6 @@ async function getPayments(req, res) {
     return res.status(404).json({ message: "invoice not found" });
   }
   const payments = await Payment.find({ invoiceId: req.params.id });
-  if (payments.length === 0) {
-    return res
-      .status(404)
-      .json({ message: "no payments found for this invoice" });
-  }
   res.status(200).json(payments);
 }
 

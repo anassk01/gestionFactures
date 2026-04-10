@@ -6,6 +6,7 @@ const healthCheck = require("./routes/health.routes");
 const authRoutes = require("./routes/auth.routes");
 const supplierRoutes = require("./routes/suppliers.routes");
 const invoiceRoutes = require("./routes/invoices.routes");
+const { getDashboard } = require("./controllers/stats.controller");
 
 const app = express();
 
@@ -14,6 +15,9 @@ app.use("/api", healthCheck);
 app.use("/api/auth", authRoutes);
 app.use("/api/suppliers", supplierRoutes);
 app.use("/api/invoices", invoiceRoutes);
+
+//dashboard
+app.use("/api/dashboard", getDashboard);
 
 //last one
 app.use((req, res) => {

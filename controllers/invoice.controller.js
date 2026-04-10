@@ -82,13 +82,12 @@ async function deleteInvoice(req, res) {
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     return res.status(400).json({ message: "invalid invoice" });
   }
-
-  const deletedInvoice = await Invoice.findOneAndDelete({
+  const invoice = await Invoice.findOne({
     _id: req.params.id,
     userId: req.user.id,
   }).populate("supplierId", "name email");
 
-  if (!deletedInvoice) {
+  if (!invoice) {
     return res.status(404).json({ message: " invoice not founds" });
   }
 
@@ -99,7 +98,9 @@ async function deleteInvoice(req, res) {
       .json({ message: "invoice cannot deleted since it contain Payments" });
   }
 
-  res.status(200).json(deletedInvoice);
+  await invoice.deleteOne();
+
+  res.status(200).json(invoice);
 }
 
 module.exports = {
