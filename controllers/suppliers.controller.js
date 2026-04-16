@@ -29,7 +29,7 @@ async function getSuppliers(req, res) {
   if (limit > 50) {
     return res.status(400).json({ message: "limit cannot be greater than 50" });
   }
-  const skip = (page - 1) / limit;
+  const skip = (page - 1) * limit;
   const totalItems = await Supplier.countDocuments({ userId: req.user.id });
   const totalPages = Math.ceil(totalItems / limit);
   const allSuppliers = await Supplier.find({ userId: req.user.id })
