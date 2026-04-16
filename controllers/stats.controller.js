@@ -99,10 +99,13 @@ async function getDashboard(req, res) {
   const suppliersInoicesEntries = Object.entries(suppliersInoices);
   const sortedSuppliers = suppliersInoicesEntries.sort((a, b) => b[1] - a[1]);
   const top3Suppliers = sortedSuppliers.slice(0, 3);
-  const topSuppliers = top3Suppliers.map((m) => ({
-    name: suppliers.find((s) => s._id.toString() === m[0].toString()).name,
-    totalAmount: m[1],
-  }));
+  const topSuppliers = top3Suppliers
+    .map((m) => {
+      const supplier = suppliers.find((s) => s._id.toString() === m[0].toString());
+      if (!supplier) return null;
+      return { name: supplier.name, totalAmount: m[1] };
+    })
+    .filter((s) => s !== null);
 
   res.status(200).json({
     totalSuppliers: totalSuppliers,

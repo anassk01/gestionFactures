@@ -24,8 +24,26 @@ async function createSupplier(req, res) {
 }
 
 async function getSuppliers(req, res) {
-  const allSuppliers = await Supplier.find({ userId: req.user.id });
-  res.status(200).json(allSuppliers);
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  if (limit > 50) {
+    return res.status(400).json({ message: "limit cannot be greater than 50" });
+  }
+  const skip = (page - 1) / limit;
+  const totalItems = await Supplier.countDocuments({ userId: req.user.id });
+  const totalPages = Math.ceil(totalItems / limit);
+  const allSuppliers = await Supplier.find({ userId: req.user.id })
+    .limit(limit)
+    .skip(skip);
+  res.status(200).json({
+    allSuppliers,
+    pagination: {
+      page: page,
+      limit: limit,
+      totalItems: totalItems,
+      totalPages: totalPages,
+    },
+  });
 }
 
 async function getSupplier(req, res) {

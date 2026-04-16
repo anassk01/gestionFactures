@@ -1,0 +1,39 @@
+@startuml
+actor Client
+participant API
+participant "auth middleware" as Auth
+database MongoDB
+
+Client -> API : POST /api/invoices/:id/payments\n{ amount, paymentDate }
+API -> Auth : verify JWT
+Auth --> API : req.user
+
+API -> MongoDB : findOne Invoice { _id, userId }
+MongoDB --> API : invoice
+
+alt invoice not found
+  API --> Client : 404 not found
+end
+
+alt invoice.status === "paid"
+  API --> Client : 400 already paid
+end
+
+API -> MongoDB : find Payments by invoiceId
+MongoDB --> API : payments[]
+
+API -> API : totalPaid = sum(payments) + amount
+
+alt totalPaid > invoice.amount
+  API --> Client : 400 exceeds invoice amount
+else totalPaid === invoice.amount
+  API -> MongoDB : invoice.status = "paid"
+else totalPaid < invoice.amount
+  API -> MongoDB : invoice.status = "partially_paid"
+end
+
+API -> MongoDB : create Payment
+MongoDB --> API : payment
+
+API --> Client : 201 { payment, invoice }
+@enduml

@@ -7,6 +7,7 @@ const authRoutes = require("./routes/auth.routes");
 const supplierRoutes = require("./routes/suppliers.routes");
 const invoiceRoutes = require("./routes/invoices.routes");
 const { getDashboard } = require("./controllers/stats.controller");
+const authenticate = require("./middlewares/auth.middleware");
 
 const app = express();
 
@@ -17,7 +18,7 @@ app.use("/api/suppliers", supplierRoutes);
 app.use("/api/invoices", invoiceRoutes);
 
 //dashboard
-app.use("/api/dashboard", getDashboard);
+app.get("/api/dashboard", authenticate, getDashboard);
 
 //last one
 app.use((req, res) => {
